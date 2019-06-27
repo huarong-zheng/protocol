@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+option objc_class_prefix = "HLW";
+
+package protobuf;
+
+service Drug {
+  // Sends a greeting
+  rpc GetDrug (GetDrugRequest) returns (GetDrugResponse) {}
+
+  rpc SearchDrug(SearchDrugRequest) returns (SearchDrugResponse) {}
+
+  // rpc 借口的类型分为一下四种: A为接受参数,B为返回参数
+  // 1. rpc GetFeature(Point) returns (Feature) {} 普通调用:A-B
+  // 2. rpc ListFeatures(Rectangle) returns (stream Feature) {} 单向流:A - B(流)
+  // 3. rpc RecordRoute(stream Point) returns (RouteSummary) {} 单向流:A(流) - B
+  // 4. rpc RouteChat(stream RouteNote) returns (stream RouteNote) {} 双向流:A(流) - B(流)
+}
+
+message SearchDrugRequest {
+    string keyword = 1;
+    int32 currentPage = 2;
+    int32 pageSize = 3;
+}
+
+message SearchDrugResponse {
+    message DrugDetail{
+        string id = 1;
+        string genericName = 2;
+        string listImage = 3;
+        int32 oTCID = 4;
+        string subclass = 5;
+        string dosageForm = 6;
+        string specification = 7;
+        string manufacturerName = 8;
+    }
+    int32 totalRow = 1;
+    repeated DrugDetail list = 2;
+}
+
+// 请求参数-根据自己的需求定义
+message GetDrugRequest {
+   string id = 1;
+}
+
+// 返回参数-根据自己的需求定义
+message GetDrugResponse {
+   string tradeName = 1;
+   string genericName = 2;
+   string detailImage = 3;
+   string subclass = 4;
+   string dosageForm = 5;
+   string specification = 6;
+   string approvalNumber = 7;
+   string healthCareLogo = 8;
+   int32 oTCID = 9;
+   string storageCondition = 10;
+   string conditionsOfCarriage = 11;
+   string manufacturerName = 12;
+   string placeOfOrigin = 13;
+   enum DrugStatus //枚举消息类型
+   {
+       NORMAL = 0;
+       DRUG_NO_FOUND = 1; //proto3版本中，首成员必须为0，成员不应有相同的值
+   }
+   DrugStatus status = 14;
+}
+
+//  cmd: protoc --go_out=plugins=grpc:. drug.proto

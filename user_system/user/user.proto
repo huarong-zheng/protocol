@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option objc_class_prefix = "HLW";
+
+package protobuf;
+
+service User {
+  // Sends a greeting
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {}
+
+  rpc UserLogin (UserLoginRequest) returns (UserLoginResponse) {}
+
+  rpc VerificationLogin (VerificationLoginRequest) returns (VerificationLoginResponse) {}
+
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+
+  // rpc 借口的类型分为一下四种: A为接受参数,B为返回参数
+  // 1. rpc GetFeature(Point) returns (Feature) {} 普通调用:A-B
+  // 2. rpc ListFeatures(Rectangle) returns (stream Feature) {} 单向流:A - B(流)
+  // 3. rpc RecordRoute(stream Point) returns (RouteSummary) {} 单向流:A(流) - B
+  // 4. rpc RouteChat(stream RouteNote) returns (stream RouteNote) {} 双向流:A(流) - B(流)
+}
+
+message UpdateUserRequest{
+    string nickName = 1;
+    string avatarUrl = 2;
+    int32 gender = 3;
+    string country = 4;
+    string province = 5;
+    string city = 6;
+    string language = 7;
+    string uid = 8;
+}
+
+message UpdateUserResponse{
+
+}
+
+message VerificationLoginRequest{
+    string token = 1;
+    string uid = 2;
+}
+message VerificationLoginResponse{
+    bool result = 1;
+}
+message UserLoginRequest{
+    string uid = 1;
+}
+
+message UserLoginResponse{
+    string token = 1;
+}
+
+// 请求参数-根据自己的需求定义
+message GetUserRequest {
+   string uid = 1;
+}
+
+// 返回参数-根据自己的需求定义
+message GetUserResponse {
+   string nickName = 1;
+   string avatarUrl = 2;
+   int32 gender = 3;
+   string country = 4;
+   string province = 5;
+   string city = 6;
+   string language = 7;
+   int32 init = 8;
+}
+
+message Config {
+  string port = 1 ;
+}
+
+
+
+//  cmd: protoc --go_out=plugins=grpc:. user.proto
